@@ -13,12 +13,12 @@ function handleError(res, reason, msg, code) {
 }
 
 app.get('/media', function(req,res) {
-	request('http://omquin.pythonanywhere.com/media', 
-		function (error, response, body) {
+	var url = 'http://omquin.pythonanywhere.com/media';
+	request(url, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			var jarr = [];
 			var obj = JSON.parse(body).data;
-			for (i = 0; i < obj.length; i++) {
+			for (i = 0; i < 4; i++) {
 				console.log(obj[i].media);
 				jarr.push({src:'http://omquin.pythonanywhere.com/' + obj[i].media, 
 					id:obj[i].id});

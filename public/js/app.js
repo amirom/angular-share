@@ -13,7 +13,6 @@ app.config(['$routeProvider', function($routeProvider) {
 ]);
 
 app.factory('factory', function($http) {
-	var urlBase = "";
 	var factory = {};
 
 	factory.getMedia = function() {
@@ -26,6 +25,27 @@ app.factory('factory', function($http) {
     return factory;
 });
 
+app.factory('Poller', function($http, $timeout) {
+    var data = { response: {}, calls: 0 };
+    var poller = function() {
+        $http.get('/media')
+        .then(function(r) {
+            console.log(data);
+            data.response = r.data;
+            data.calls++;
+            $timeout(poller, 10000);
+        });      
+    };
+    poller();
+
+    return {
+        data: data
+    };
+});
+
+app.run(function(Poller) {});
+
+
 app.filter('trusted', ['$sce', function ($sce) {
     return function(url) {
         return $sce.trustAsResourceUrl(url);
@@ -34,7 +54,6 @@ app.filter('trusted', ['$sce', function ($sce) {
 
 app.controller('main', function($scope, $sce, factory) {
     $scope.ind = 0;
-	// $scope.slides = $scope.checkThing();
 
     factory.getMedia().success(function(data, status) {
         $scope.slides = data;
