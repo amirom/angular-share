@@ -1,0 +1,22 @@
+html {
+	background-color: #000;
+}
+
+.absolute-center {
+	margin: auto;
+  	position: absolute;
+  	top: 0; left: 0; bottom: 0; right: 0;
+}
+
+h1 {
+	color: white;
+	text-align: center;
+}
+
+.thing {
+	color: white;
+	padding-top: 40px;
+	margin: auto;
+    text-align: center;
+    font-size: 50px;
+}

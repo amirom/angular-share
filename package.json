@@ -1,0 +1,14 @@
+{
+  "name"         : "carousel-app",
+  "version"      : "0.0.1",
+  "description"  : "you know",
+  "main"         : "server.js",
+  "author"       : "amir",
+  "dependencies" : {
+    "body-parser"    : "*",
+    "express"        : "*",
+    "method-override": "*",
+    "morgan"         : "*",
+    "request"        : "*"
+  }
+}
