@@ -21,7 +21,6 @@ app.factory('factory', function($http) {
 				console.log('Error', data);
 			});
 	}
-
     return factory;
 });
 
@@ -43,22 +42,44 @@ app.factory('Poller', function($http, $timeout) {
     };
 });
 
-app.run(function(Poller) {});
-
-
 app.filter('trusted', ['$sce', function ($sce) {
     return function(url) {
         return $sce.trustAsResourceUrl(url);
     };
 }]);
 
-app.controller('main', function($scope, $sce, factory) {
+app.controller('main', function($scope, $sce, $timeout, factory) {
     $scope.ind = 0;
+    $scope.newSize = 0;
+    $scope.oldSize = 0;
+    $scope.slides = [];
 
     factory.getMedia().success(function(data, status) {
         $scope.slides = data;
+        $scope.newSize = Object.keys(data).length;
+        $scope.oldSize = Object.keys(data).length;
     });
 
+    var poller = function() {
+        factory.getMedia().success(function(data, status) {
+
+            $scope.newSize = Object.keys(data).length;
+            console.log("new: " + $scope.newSize + " old:" + $scope.oldSize);
+            if ($scope.newSize > $scope.oldSize) {
+                 // TODO: get the new size difference and push into slides array
+                 $scope.oldSize = Object.keys(data).length;
+                 console.log("updated");
+            
+            }
+        }).then(function(r) {
+            console.log("hi");
+            $timeout(poller, 10000);
+        });     
+    };
+
+    poller();
+
+    // TODO: find way to switch to newest slide inputed
 	$scope.options = {
             visible: 5,
             perspective: 35,
@@ -79,6 +100,10 @@ app.controller('main', function($scope, $sce, factory) {
     };
 
     $scope.clicked = function(index) {
+        $scope.newSize += 1;
+        $scope.slides.push(
+            { "src": "http://omquin.pythonanywhere.com/mediafiles/100141.mp4" }
+        );
         console.log(index);
     };
 

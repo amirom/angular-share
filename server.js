@@ -1,7 +1,9 @@
 var express = require('express');
 var app = express();                              
 var bodyParser = require('body-parser'); 
-var request = require('request');   
+var request = require('request');
+var fs = require('fs');
+var path = require('path');   
 
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
@@ -26,6 +28,24 @@ app.get('/media', function(req,res) {
 			res.contentType('application/json');
 			res.send(JSON.stringify(jarr));
 		}
+	});
+});
+
+app.get('/test', function (req, res) {
+	// var fule = function fileList(dir) {
+ //  		return fs.readdirSync(dir).reduce(function(list, file) {
+	// 	    var name = path.join(dir, file);
+	// 	    var isDir = fs.statSync(name).isDirectory();
+	// 	    return list.concat(isDir ? fileList(name) : [name]);
+	// 	  }, []);
+	// }
+	// res.send(fule('./public/img'));
+	fs.readdir(path, function(err, items) {
+	    console.log(items);
+	 
+	    for (var i=0; i<items.length; i++) {
+	        console.log(items[i]);
+	    }
 	});
 });
 
