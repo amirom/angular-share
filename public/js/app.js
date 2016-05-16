@@ -67,12 +67,11 @@ app.controller('main', function($scope, $sce, $timeout, factory) {
             console.log("new: " + $scope.newSize + " old:" + $scope.oldSize);
             if ($scope.newSize > $scope.oldSize) {
                  // TODO: get the new size difference and push into slides array
+                 $scope.slides.push(data[data.length - 1].src);
                  $scope.oldSize = Object.keys(data).length;
                  console.log("updated");
-            
             }
         }).then(function(r) {
-            console.log("hi");
             $timeout(poller, 10000);
         });     
     };

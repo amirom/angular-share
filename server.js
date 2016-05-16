@@ -21,7 +21,6 @@ app.get('/media', function(req,res) {
 			var jarr = [];
 			var obj = JSON.parse(body).data;
 			for (i = 0; i < 4; i++) {
-				console.log(obj[i].media);
 				jarr.push({src:'http://omquin.pythonanywhere.com/' + obj[i].media, 
 					id:obj[i].id});
 			}
@@ -49,7 +48,27 @@ app.get('/test', function (req, res) {
 	});
 });
 
+// path = request.args.get('media')
+// email = request.args.get('email')
+// mediaId = request.args.get('id')
 app.post('/email', function(req,res) {
+	var options = {
+	    url: 'http://samwize.com',
+	    method: 'POST',
+	    headers: headers,
+	    form: {
+	    	'path': 'xxx', 
+	    	'email': 'yyy',
+	    	'mediaId': 'bbb'
+	    }
+	}
+ 
+	request(options, function (error, response, body) {
+	    if (!error && response.statusCode == 200) {
+	        // Print out the response body
+	        console.log(body)
+	    }
+	});
 	res.send("email");
 });
 
