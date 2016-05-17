@@ -46,6 +46,7 @@ app.filter('trusted', ['$sce', function ($sce) {
 
 app.controller('main', function($scope, $sce, $timeout, 
     $interval, $uibModal, factory) {
+    var pullTimer = 10000;
     $scope.ind = 0;
     $scope.newSize = 0;
     $scope.oldSize = 0;
@@ -71,7 +72,7 @@ app.controller('main', function($scope, $sce, $timeout,
         });    
     };
 
-    $interval(poller, 10000);
+    $interval(poller, pullTimer);
 
     // TODO: find way to switch to newest slide inputed
 	$scope.options = {
@@ -101,37 +102,19 @@ app.controller('main', function($scope, $sce, $timeout,
         });
     };
 
-    $scope.clicked = function(index) {
-        // $scope.newSize += 1;
-        // $scope.slides.push(
-        //     { "src": "http://omquin.pythonanywhere.com/mediafiles/100141.mp4" }
-        // );
-        console.log(index);
-    };
+    $scope.setIndex = function(index) { $scope.ind = index; }
 
-    $scope.setIndex = function(index) {
-        $scope.ind = index;
-    }
+    $scope.getIndex = function() { return $scope.ind; }
 
-    $scope.getIndex = function() {
-        return $scope.ind;
-    }
-
-    $scope.getFileType = function(file) {
-    	return file.split('.').pop();
-    }
+    $scope.getFileType = function(file) { return file.split('.').pop(); }
 
     $scope.lastSlide =  function(index) {
-        console.log("last slide " + index);
     }
 
     $scope.selectedClick = function(index) {
-        console.log("selected slide " + index)
     }
 
-    $scope.addSlide = function(slide, array) {
-        array.push(slide);
-    }
+    $scope.addSlide = function(slide, array) { array.push(slide); }
 
     $scope.removeSlide = function(index, array) {
         array.splice(array.indexOf(array[index]), 1);
@@ -191,7 +174,7 @@ app.controller('ModalController', ['$scope', '$uibModalInstance', '$timeout', 's
                 }, displayDuration);
             }
         }
-
+        //make sure to clean up number data
         if (slideData.type === 1) {
             if (('' + $scope.sms.length) == 10) {
                 var dataSend = {

@@ -26,3 +26,16 @@ h1 {
 .msg {
 	font-size: 26px;
 }
+
+.share-btn {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+#title-share {
+	margin-bottom: 25px;
+}
+
+.carousel-3d-container {
+
+}
