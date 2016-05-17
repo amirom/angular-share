@@ -75,16 +75,16 @@ app.controller('main', function($scope, $sce, $timeout,
 
     // TODO: find way to switch to newest slide inputed
 	$scope.options = {
-            visible: 5,
+            visible: 3,
             perspective: 35,
             startSlide: 0,
             border: 0,
-            width: 450,
-            height: 440,
+            width: 600,
+            height: 400,
             space: 300,
             autoRotationSpeed: 100000000000
         };
-
+    // 1800x1200
     // 0 = email, 1 = sms
     $scope.open = function (index, type) {
         var modalInstance = $uibModal.open({
@@ -138,58 +138,92 @@ app.controller('main', function($scope, $sce, $timeout,
     }
 });
 
-app.controller('ModalController', ['$scope', '$uibModalInstance', 'slideData', 'factory',
-    function($scope, $uibModalInstance, slideData, factory){
+app.controller('ModalController', ['$scope', '$uibModalInstance', '$timeout', 'slideData', 'factory',
+    function($scope, $uibModalInstance, $timeout, slideData, factory){
         
     $scope.email = '';
     $scope.sms = '';
     $scope.type = slideData.type;
+    $scope.emailMsg = false;
+    $scope.smsMsg = false;
+    $scope.successMsg = false;
+
+    var messageTimer = false;
+    var displayDuration = 3000;
 
     if (slideData.type === 0) {
-        console.log('here');
         $scope.title = 'Enter your e-mail';
         $scope.label = 'E-mail';
     }
 
     if (slideData.type === 1) {
-        console.log('not here');
         $scope.title = 'Enter your phone number';
         $scope.label = 'SMS';
     }
 
     $scope.send = function() {
-        // do some email validation here
+
+        if (messageTimer) {
+            $timeout.cancel(messageTimer);
+        }
 
         if (slideData.type === 0) {
-            var dataSend = {
-                email: $scope.email,
-                path: slideData.data.src,
-                id: slideData.data.id
-            };
-            console.log(dataSend);
-            factory.postMedia(dataSend)
-                .success(function (data, status) {
-                    console.log(data);
-                });
+            if (validateEmail($scope.email) && $scope.email) {
+                var dataSend = {
+                    email: $scope.email,
+                    path: slideData.data.src,
+                    id: slideData.data.id
+                };
+                factory.postMedia(dataSend)
+                    .success(function (data, status) {
+                        console.log(data);
+                    });
+                $scope.successMsg = true;
+                messageTimer = $timeout(function () {
+                    $scope.successMsg = false;
+                    $uibModalInstance.close();
+                }, displayDuration);
+            } else {
+                $scope.emailMsg = true;
+                messageTimer = $timeout(function () {
+                    $scope.emailMsg = false;
+                    $scope.email = '';
+                }, displayDuration);
+            }
         }
 
         if (slideData.type === 1) {
-            var dataSend = {
-                sms: $scope.sms,
-                path: slideData.data.src,
-                id: slideData.data.id
-            };
-            console.log(dataSend);
-            factory.smsMedia(dataSend)
-                .success(function (data, status) {
-                    console.log(data);
+            if (('' + $scope.sms.length) == 10) {
+                var dataSend = {
+                    sms: $scope.sms,
+                    path: slideData.data.src,
+                    id: slideData.data.id
+                };
+                factory.smsMedia(dataSend)
+                    .success(function (data, status) {
+                        console.log(data);
                 });
+                $scope.successMsg = true;
+                messageTimer = $timeout(function () {
+                    $scope.successMsg = false;
+                    $uibModalInstance.close();
+                }, displayDuration);
+            } else {
+                $scope.smsMsg = true;
+                messageTimer = $timeout(function () {
+                    $scope.smsMsg = false;
+                    $scope.sms = '';
+                }, displayDuration);
+            }
         }
-
-        $uibModalInstance.close();
     };
 
     $scope.cancel = function() {
         $uibModalInstance.dismiss();
     };
+
+    function validateEmail(email) {
+        var re = /\S+@\S+\.\S+/;
+        return re.test(email);
+    }
 }]);

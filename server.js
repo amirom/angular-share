@@ -68,22 +68,18 @@ app.post('/email', function (req, res) {
 	var path = req.body.path;
 	var email = req.body.email;
 
+	var postUrl = url + '?id=' + id + '&media=' + path + '&email=' + email;
+
 	var options = {
-		url: url,
+		url: postUrl,
 		method: 'POST',
-		headers: { 
-			'media' : path,
-			'email' : email,
-			'id' : id
-		}
 	};
 
 	request(options, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
-			
+			res.send(response);
 		}
 	});
-	res.send(id + ' ' + path + ' ' + email);
 });
 
 app.post('/sms', function (req, res) {
@@ -91,6 +87,19 @@ app.post('/sms', function (req, res) {
 	var id = req.body.id;
 	var path = req.body.path;
 	var sms = req.body.sms;
+
+	var postUrl = url + '?id=' + id + '&media=' + path + '&sms=' + sms;
+
+	var options = {
+		url: postUrl,
+		method: 'POST'
+	};
+
+	request(options, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			res.send(response);
+		}
+	});
 });
 
 var server = app.listen(process.env.PORT || 8000, function () {

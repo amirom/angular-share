@@ -17,7 +17,7 @@
 
 	<body ng-controller="main" ng-view>
 		<div class="absolute-center">
-			<h1>Select yo jams</h1>
+			<h1 id="title-share">Share your media</h1>
 	        <carousel3d 
 	        	ng-model="slides" 
 	        	options="options"
@@ -25,14 +25,20 @@
 	        	on-selected-click="selectedClick(index)"
 	            on-last-slide="lastSlide(index)">
 	        	<carousel3d-slide ng-repeat="x in slides track by $index">
-	        	<figure>
-	        		<img ng-if="getFileType(x.src) == 'gif' || getFileType(x.src)=='jpg'" 
-	        		ng-src="{{x.src}}"/>
-	        		<video autoplay loop width="75%" height="75%"
-	        		 ng-if="getFileType(x.src) == 'mp4'" 
-	        		 ng-src="{{x.src | trusted}}">
-	        		 </video>
-	        		 </figure>
+		        	<figure>
+		        		<img 
+		        			ng-if="getFileType(x.src) == 'gif' || getFileType(x.src)=='jpg'" 
+		        			ng-src="{{x.src}}"/>
+		        		<video 
+		        			autoplay 
+		        			loop 
+		        			width="50%" 
+		        			height="50%"
+		        		 	ng-if="getFileType(x.src) == 'mp4'" 
+		        		 	ng-src="{{x.src | trusted}}" 
+		        		 	style='text-align:center'>
+		        		</video>
+		        	</figure>
 		    	</carousel3d-slide>
 			</carousel3d>
 			<div class="thing">

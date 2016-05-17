@@ -1,12 +1,18 @@
 <div class="modal-header">
-    <h3 class="modal-title">{{title}}</h3>
+    <h3 class="modal-title" ng-hide="successMsg">{{title}}</h3>
+    <div class="alert-success msg" ng-show="successMsg">Successfully sent media!</div>
 </div>
-<div class="modal-body">
+
+<div class="modal-body" ng-hide="successMsg">
+	<div class="alert-danger msg" ng-show="emailMsg">Not valid email</div>
+    <div class="alert-danger msg" ng-show="smsMsg">Not valid 10 digit number</div>
     <label>{{label}}</label>
-    <input class="form-control email" placeholder="email@you.com (where to send video to)" data-placement="top" data-trigger="manual" data-content="Must be a valid e-mail address (user@gmail.com)" type="text" ng-model="email" ng-show="type === 0">
-    <input class="form-control email" placeholder="phone number" data-placement="top" data-trigger="manual" data-content="Must be a valid 10 digit number" type="text" ng-model="sms" ng-show="type === 1">
+    <form name="form">
+	    <input class="form-control email" name="userEmail" placeholder="email@you.com (where to send video to)" data-placement="top" data-trigger="manual" data-content="Must be a valid e-mail address (user@gmail.com)" type="text" ng-model="email" ng-show="type === 0">
+	    <input class="form-control email" placeholder="phone number" data-placement="top" data-trigger="manual" data-content="Must be a valid 10 digit number" type="text" ng-model="sms" ng-show="type === 1" required>
+    </form>
 </div>
-<div class="modal-footer">
+<div class="modal-footer" ng-hide="successMsg">
     <button class="btn btn-primary" type="button" ng-click="send()">Send</button>
     <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
 </div>
