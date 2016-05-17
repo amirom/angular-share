@@ -1,16 +1,15 @@
-var app = angular.module('app', ['ngRoute', 'angular-carousel-3d']);
+var app = angular.module('app', ['angular-carousel-3d', 'ui.bootstrap']);
 
-app.config(['$routeProvider', function($routeProvider) {
-    $routeProvider
-        .when('/', {
-            controller: 'main',
-            templateUrl: 'index.html'
-        })
-        .otherwise({
-            redirectTo: '/'
-        });
-    }
-]);
+// app.config(['$routeProvider', function($routeProvider) {
+//     $routeProvider
+//         .when('/', {
+//             templateUrl: 'index.html'
+//         })
+//         .otherwise({
+//             redirectTo: '/'
+//         });
+//     }
+// ]);
 
 app.factory('factory', function($http) {
 	var factory = {};
@@ -21,25 +20,15 @@ app.factory('factory', function($http) {
 				console.log('Error', data);
 			});
 	}
+
+    factory.postMedia = function(stuff) {
+        return $http.post('/email', stuff)
+            .error(function (data, status) {
+                console.log('Error', data);
+            });
+    }
+
     return factory;
-});
-
-app.factory('Poller', function($http, $timeout) {
-    var data = { response: {}, calls: 0 };
-    var poller = function() {
-        $http.get('/media')
-        .then(function(r) {
-            console.log(data);
-            data.response = r.data;
-            data.calls++;
-            $timeout(poller, 10000);
-        });      
-    };
-    poller();
-
-    return {
-        data: data
-    };
 });
 
 app.filter('trusted', ['$sce', function ($sce) {
@@ -48,7 +37,7 @@ app.filter('trusted', ['$sce', function ($sce) {
     };
 }]);
 
-app.controller('main', function($scope, $sce, $timeout, factory) {
+app.controller('main', function($scope, $sce, $timeout, $interval, $uibModal, factory) {
     $scope.ind = 0;
     $scope.newSize = 0;
     $scope.oldSize = 0;
@@ -71,12 +60,10 @@ app.controller('main', function($scope, $sce, $timeout, factory) {
                  $scope.oldSize = Object.keys(data).length;
                  console.log("updated");
             }
-        }).then(function(r) {
-            $timeout(poller, 10000);
-        });     
+        });    
     };
 
-    poller();
+    $interval(poller, 10000);
 
     // TODO: find way to switch to newest slide inputed
 	$scope.options = {
@@ -84,25 +71,29 @@ app.controller('main', function($scope, $sce, $timeout, factory) {
             perspective: 35,
             startSlide: 0,
             border: 0,
-            dir: 'ltr',
             width: 450,
             height: 440,
             space: 300,
             autoRotationSpeed: 100000
         };
 
-    $scope.checkThing = function() {
-        factory.getMedia()
-            .success(function(data, status) {
-                return data;
-            });
+    $scope.open = function (index) {
+        var modalInstance = $uibModal.open({
+            templateUrl: '/modalView.html',
+            controller: 'ModalController',
+            resolve: {
+                slideData: function() {
+                    return $scope.slides[index];
+                }
+            }
+        });
     };
 
     $scope.clicked = function(index) {
-        $scope.newSize += 1;
-        $scope.slides.push(
-            { "src": "http://omquin.pythonanywhere.com/mediafiles/100141.mp4" }
-        );
+        // $scope.newSize += 1;
+        // $scope.slides.push(
+        //     { "src": "http://omquin.pythonanywhere.com/mediafiles/100141.mp4" }
+        // );
         console.log(index);
     };
 
@@ -134,3 +125,29 @@ app.controller('main', function($scope, $sce, $timeout, factory) {
         array.splice(array.indexOf(array[index]), 1);
     }
 });
+
+app.controller('ModalController', ['$scope', '$uibModalInstance', 'slideData', 'factory',
+    function($scope, $uibModalInstance, slideData, factory){
+        
+    $scope.email = '';
+
+    $scope.send = function() {
+        // do some email validation here
+
+        var dataSend = {
+            email: $scope.email,
+            path: slideData.src,
+            id: slideData.id
+        };
+
+        factory.postMedia(dataSend)
+            .success(function (data, status) {
+                console.log(data);
+            });
+        $uibModalInstance.close();
+    };
+
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss();
+    };
+}]);
