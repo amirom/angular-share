@@ -2,13 +2,13 @@
 <html ng-app="app">
 
 	<head>
-		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 		<link rel="stylesheet" type="text/css" href="css/carousel-3d.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-route.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.2/ui-bootstrap-tpls.min.js"></script>
+		<script src="js/angular.min.js"></script>
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-route.min.js"></script> -->
+		<script src="js/ui-bootstrap-tpls-1.3.2.min.js"></script>
 		<script src="js/angular-animate.js"></script>
 		<script src="js/app.js"></script>
 		<script src="js/angular-swipe.js"></script>
@@ -26,8 +26,7 @@
 	            on-last-slide="lastSlide(index)">
 	        	<carousel3d-slide ng-repeat="x in slides track by $index">
 	        	<figure>
-	        		<img
-	        		ng-if="getFileType(x.src) == 'gif' || getFileType(x.src)=='jpg'" 
+	        		<img ng-if="getFileType(x.src) == 'gif' || getFileType(x.src)=='jpg'" 
 	        		ng-src="{{x.src}}"/>
 	        		<video autoplay loop width="75%" height="75%"
 	        		 ng-if="getFileType(x.src) == 'mp4'" 
@@ -37,7 +36,8 @@
 		    	</carousel3d-slide>
 			</carousel3d>
 			<div class="thing">
-				<i class="fa fa-envelope" aria-hidden="true" ng-click="open(getIndex())"></i>
+				<i class="fa fa-envelope" aria-hidden="true" ng-click="open(getIndex(), 0)"></i>
+				<i class="fa fa-comment" aria-hidden="true" ng-click="open(getIndex(), 1)"></i>
 			</div>
 		</div>
 	</body>

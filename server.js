@@ -3,11 +3,14 @@ var app = express();
 var bodyParser = require('body-parser'); 
 var request = require('request');
 var fs = require('fs');
-var path = require('path');   
+var path = require('path');
+var morgan = require('morgan');
+
+app.use(morgan('combined'));
 
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
-
+app.use(bodyParser.urlencoded({ extended: true }));
 
 function handleError(res, reason, msg, code) {
 	console.log("Error: " + reason);
@@ -28,7 +31,7 @@ app.get('/media', function (req,res) {
 		if (!error && response.statusCode == 200) {
 			var jarr = [];
 			var obj = JSON.parse(body).data;
-			for (i = 0; i < 2; i++) {
+			for (i = 0; i < 6; i++) {
 				jarr.push({src:'http://omquin.pythonanywhere.com/' + obj[i].media, 
 					id:obj[i].id});
 			}
@@ -60,31 +63,34 @@ app.get('/test', function (req, res) {
 // email = request.args.get('email')
 // mediaId = request.args.get('id')
 app.post('/email', function (req, res) {
+	var url = 'http://omquin.pythonanywhere.com/email';
+	var id = req.body.id;
+	var path = req.body.path;
+	var email = req.body.email;
 
-var fullBody = '';
-    
-    req.on('data', function(chunk) {
-      // append the current chunk of data to the fullBody variable
-      fullBody += chunk.toString();
-      res.send(fullBody);
-    });
-    
-    req.on('end', function() {
-    
-      // request ended -> do something with the data
-      res.writeHead(200, "OK", {'Content-Type': 'text/html'});
-      
-      // parse the received body data
-      var decodedBody = querystring.parse(fullBody);
- 		res.send(decodedBody + 'dfdf');
-      // output the decoded data to the HTTP response          
-    
-      
-      res.end();
-  });
+	var options = {
+		url: url,
+		method: 'POST',
+		headers: { 
+			'media' : path,
+			'email' : email,
+			'id' : id
+		}
+	};
 
+	request(options, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			
+		}
+	});
+	res.send(id + ' ' + path + ' ' + email);
+});
 
-	
+app.post('/sms', function (req, res) {
+	var url = 'http://omquin.pythonanywhere.com/sms';
+	var id = req.body.id;
+	var path = req.body.path;
+	var sms = req.body.sms;
 });
 
 var server = app.listen(process.env.PORT || 8000, function () {

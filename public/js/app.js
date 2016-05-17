@@ -28,6 +28,13 @@ app.factory('factory', function($http) {
             });
     }
 
+    factory.smsMedia = function(stuff) {
+        return $http.post('/sms', stuff)
+            .error(function (data, status) {
+                console.log('Error', data);
+            });
+    }
+
     return factory;
 });
 
@@ -37,7 +44,8 @@ app.filter('trusted', ['$sce', function ($sce) {
     };
 }]);
 
-app.controller('main', function($scope, $sce, $timeout, $interval, $uibModal, factory) {
+app.controller('main', function($scope, $sce, $timeout, 
+    $interval, $uibModal, factory) {
     $scope.ind = 0;
     $scope.newSize = 0;
     $scope.oldSize = 0;
@@ -74,16 +82,20 @@ app.controller('main', function($scope, $sce, $timeout, $interval, $uibModal, fa
             width: 450,
             height: 440,
             space: 300,
-            autoRotationSpeed: 100000
+            autoRotationSpeed: 100000000000
         };
 
-    $scope.open = function (index) {
+    // 0 = email, 1 = sms
+    $scope.open = function (index, type) {
         var modalInstance = $uibModal.open({
             templateUrl: '/modalView.html',
             controller: 'ModalController',
             resolve: {
                 slideData: function() {
-                    return $scope.slides[index];
+                    return {
+                        'type': type,
+                        'data': $scope.slides[index]
+                    }
                 }
             }
         });
@@ -130,20 +142,50 @@ app.controller('ModalController', ['$scope', '$uibModalInstance', 'slideData', '
     function($scope, $uibModalInstance, slideData, factory){
         
     $scope.email = '';
+    $scope.sms = '';
+    $scope.type = slideData.type;
+
+    if (slideData.type === 0) {
+        console.log('here');
+        $scope.title = 'Enter your e-mail';
+        $scope.label = 'E-mail';
+    }
+
+    if (slideData.type === 1) {
+        console.log('not here');
+        $scope.title = 'Enter your phone number';
+        $scope.label = 'SMS';
+    }
 
     $scope.send = function() {
         // do some email validation here
 
-        var dataSend = {
-            email: $scope.email,
-            path: slideData.src,
-            id: slideData.id
-        };
+        if (slideData.type === 0) {
+            var dataSend = {
+                email: $scope.email,
+                path: slideData.data.src,
+                id: slideData.data.id
+            };
+            console.log(dataSend);
+            factory.postMedia(dataSend)
+                .success(function (data, status) {
+                    console.log(data);
+                });
+        }
 
-        factory.postMedia(dataSend)
-            .success(function (data, status) {
-                console.log(data);
-            });
+        if (slideData.type === 1) {
+            var dataSend = {
+                sms: $scope.sms,
+                path: slideData.data.src,
+                id: slideData.data.id
+            };
+            console.log(dataSend);
+            factory.smsMedia(dataSend)
+                .success(function (data, status) {
+                    console.log(data);
+                });
+        }
+
         $uibModalInstance.close();
     };
 
