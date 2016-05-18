@@ -127,6 +127,7 @@ app.controller('ModalController', ['$scope', '$uibModalInstance', '$timeout', 's
     $scope.email = '';
     $scope.sms = '';
     $scope.type = slideData.type;
+    $scope.imgSrc = slideData.data.src;
     $scope.emailMsg = false;
     $scope.smsMsg = false;
     $scope.successMsg = false;
@@ -167,10 +168,10 @@ app.controller('ModalController', ['$scope', '$uibModalInstance', '$timeout', 's
                     $uibModalInstance.close();
                 }, displayDuration);
             } else {
+                $scope.email = '';
                 $scope.emailMsg = true;
                 messageTimer = $timeout(function () {
                     $scope.emailMsg = false;
-                    $scope.email = '';
                 }, displayDuration);
             }
         }
@@ -192,10 +193,10 @@ app.controller('ModalController', ['$scope', '$uibModalInstance', '$timeout', 's
                     $uibModalInstance.close();
                 }, displayDuration);
             } else {
+                $scope.sms = '';
                 $scope.smsMsg = true;
                 messageTimer = $timeout(function () {
                     $scope.smsMsg = false;
-                    $scope.sms = '';
                 }, displayDuration);
             }
         }

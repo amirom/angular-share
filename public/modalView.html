@@ -11,6 +11,9 @@
 	    <input class="form-control email" name="userEmail" placeholder="email@you.com (where to send video to)" data-placement="top" data-trigger="manual" data-content="Must be a valid e-mail address (user@gmail.com)" type="text" ng-model="email" ng-show="type === 0">
 	    <input class="form-control email" placeholder="phone number" data-placement="top" data-trigger="manual" data-content="Must be a valid 10 digit number" type="tel" ng-model="sms" ng-show="type === 1" required>
     </form>
+    <div>
+   		<img ng-src="{{imgSrc}}" width="30%" height="30%" style="text-align:center;">
+    </div>
 </div>
 <div class="modal-footer" ng-hide="successMsg">
     <button class="btn btn-primary" type="button" ng-click="send()">Send</button>
